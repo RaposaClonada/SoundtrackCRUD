@@ -3,12 +3,7 @@ json = importlib.import_module("json")
 
 class JsonCRUD:
     def __init__(self, file):
-        if not file.endswith(".json"):
-            for i in file:
-                if i == '.':
-                    file = file.split('.')[0]
-                    break
-            file = file + ".json"
+        file = file.split(".")[0] + '.json'
         open(file).close()
         self.file = file
         self.columns = ()
