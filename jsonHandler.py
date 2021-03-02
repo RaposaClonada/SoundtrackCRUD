@@ -21,3 +21,9 @@ class JsonCRUD:
         dictionary = json.loads(file.read())
         file.close()
         return len(dictionary['CRUD'])
+    
+    def __getitem__(self, key):
+        file = open(self.filename)
+        dictionary = json.loads(file.read())
+        file.close()
+        return dictionary['CRUD'][key]
