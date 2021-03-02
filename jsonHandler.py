@@ -16,4 +16,8 @@ class JsonCRUD:
         self.filename = filename
         self.columns = ()
     
-a = JsonCRUD('arquivo')
+    def __len__(self):
+        file = open(self.filename)
+        dictionary = json.loads(file.read())
+        file.close()
+        return len(dictionary['CRUD'])
