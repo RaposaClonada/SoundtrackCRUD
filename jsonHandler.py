@@ -2,57 +2,18 @@ import importlib
 json = importlib.import_module("json")
 
 class JsonCRUD:
-    def __init__(self, file):
-        file = file.split(".")[0] + '.json'
-        open(file).close()
-        self.file = file
+    def __init__(self, filename: str):
+        filename = filename.split('.')[0]+'.json'
+        try:
+            file = open(filename)
+            dictionary = json.loads(file.read())
+            if not ('CRUD' in dictionary and len(dictionary) == 1 and type(dictionary['CRUD']) == list):
+                raise FileNotFoundError
+        except FileNotFoundError:
+            file = open(filename, 'w')
+            file.write(json.dumps({'CRUD': []}))
+        file.close()
+        self.filename = filename
         self.columns = ()
-        self.num_itens = 0
     
-    def newColumn(self, column_name: str):
-        with open(self.file) as file:
-            dictionary = json.load(file)
-            for itens in dictionary:
-                dictionary[itens][column_name] = 'N\A'
-            json.dump(dictionary, file)
-        self.columns += tuple([column_name])
-    
-    def addNewItem(self):
-        with open(self.file) as file:
-            dictionary = json.load(file)
-            dictionary[self.num_itens] = {}
-            self.num_itens += 1
-            for columns in self.columns:
-                dictionary[self.num_itens-1][columns] = 'N\A'
-            json.dump(dictionary, file)
-    
-    def editItem(self, index, column, data):
-        with open(self.file) as file:
-            dictionary = json.load(file)
-            dictionary[str(index)][column] = data
-            json.dump(dictionary, file)
-    
-    def removeItem(self, index):
-        with open(self.file) as file:
-            dictionary = json.load(file)
-            for i in dictionary:
-                if int(i) <= int(index): continue
-                dictionary[str(int(i)-1)] = dictionary[i]
-            del dictionary[i]
-            json.dump(dictionary, file)
-        self.num_itens -= 1
-    
-    def removeColumn(self, column):
-        with open(self.file) as file:
-            dictionary = json.load(file)
-            for i in dictionary:
-                del dictionary[i][column]
-            json.dump(dictionary, file)
-        temporary_list = list(self.columns)
-        temporary_list.remove(column)
-        self.columns = tuple(temporary_list)
-    
-    def returnItem(self, index):
-        with open(self.file) as file:
-            dictionary = json.load(file)
-            return dictionary[str(index)]
+a = JsonCRUD('arquivo')
