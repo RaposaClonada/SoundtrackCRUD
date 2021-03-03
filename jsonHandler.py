@@ -27,3 +27,13 @@ class JsonCRUD:
         dictionary = json.loads(file.read())
         file.close()
         return dictionary['CRUD'][key]
+    
+    def __delitem__(self, key):
+        file = open(self.filename)
+        dictionary = json.loads(file.read())
+        file.close()
+        del dictionary['CRUD'][key]
+        dictionary = json.dumps(dictionary)
+        file = open(self.filename, 'w')
+        file.write(dictionary)
+        file.close()
