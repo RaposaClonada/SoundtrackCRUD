@@ -75,3 +75,26 @@ class JsonCRUD:
         file = open(self.filename, 'w')
         file.write(json.dumps(dictionary))
         file.close()
+    
+    def delColumn(self, column):
+        columns = list(self.columns)
+        columns.remove(column)
+        self.columns = tuple(columns)
+        file = open(self.filename)
+        dictionary = json.loads(file.read())
+        file.close()
+        del dictionary['columns'][dictionary['columns'].index(column)]
+        for item in dictionary['CRUD']:
+            del item[column]
+        file = open(self.filename, 'w')
+        file.write(json.dumps(dictionary))
+        file.close()
+    
+    def updateItem(self, index, column, value):
+        file = open(self.filename)
+        dictionary = json.loads(file.read())
+        file.close()
+        dictionary['CRUD'][index][column] = value
+        file = open(self.filename, 'w')
+        file.write(json.dumps(dictionary))
+        file.close()
