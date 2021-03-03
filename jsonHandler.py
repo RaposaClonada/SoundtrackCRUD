@@ -7,14 +7,14 @@ class JsonCRUD:
         try:
             file = open(filename)
             dictionary = json.loads(file.read())
-            if not ('CRUD' in dictionary and len(dictionary) == 1 and type(dictionary['CRUD']) == list):
+            if not ('CRUD' in dictionary and 'columns' in dictionary and len(dictionary) == 2 and type(dictionary['CRUD']) == list):
                 raise FileNotFoundError
         except FileNotFoundError:
             file = open(filename, 'w')
-            file.write(json.dumps({'CRUD': []}))
+            file.write(json.dumps({'columns': [],'CRUD': []}))
+        self.columns = tuple(dictionary['columns'])
         file.close()
         self.filename = filename
-        self.columns = ()
     
     def __len__(self):
         file = open(self.filename)
@@ -54,6 +54,24 @@ class JsonCRUD:
                 dictionary['CRUD'][itemIndex][columnName] = columnContents[itemIndex]
             except IndexError:
                 dictionary['CRUD'][itemIndex][columnName] = None
+        dictionary['columns'] += [columnName]
+        file = open(self.filename, 'w')
+        file.write(json.dumps(dictionary))
+        file.close()
+        self.columns += tuple([columnName])
+    
+    def newItem(self, *columnsContent):
+        item = {}
+        for index in range(len(self.columns)):
+            try:
+                if type(columnsContent[index]) not in (dict, list, tuple, str, float, int, bool, type(None)): raise IndexError
+                item[self.columns[index]] = columnsContent[index]
+            except IndexError:
+                item[self.columns[index]] = None
+        file = open(self.filename)
+        dictionary = json.loads(file.read())
+        file.close()
+        dictionary['CRUD'].append(item)
         file = open(self.filename, 'w')
         file.write(json.dumps(dictionary))
         file.close()
