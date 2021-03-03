@@ -42,4 +42,18 @@ class JsonCRUD:
         file = open(self.filename)
         dictionary = json.loads(file.read())
         file.close()
-        return tuple(dictionary['CRUD'])
+        return (i for i in dictionary['CRUD'])
+    
+    def newColumn(self, columnName, *columnContents):
+        file = open(self.filename)
+        dictionary = json.loads(file.read())
+        file.close()
+        for itemIndex in range(len(self)):
+            try:
+                if type(columnContents[itemIndex]) not in (dict, list, tuple, str, float, int, bool, type(None)): raise IndexError
+                dictionary['CRUD'][itemIndex][columnName] = columnContents[itemIndex]
+            except IndexError:
+                dictionary['CRUD'][itemIndex][columnName] = None
+        file = open(self.filename, 'w')
+        file.write(json.dumps(dictionary))
+        file.close()
