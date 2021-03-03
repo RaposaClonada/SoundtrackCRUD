@@ -37,3 +37,9 @@ class JsonCRUD:
         file = open(self.filename, 'w')
         file.write(dictionary)
         file.close()
+
+    def __iter__(self):
+        file = open(self.filename)
+        dictionary = json.loads(file.read())
+        file.close()
+        return tuple(dictionary['CRUD'])
