@@ -12,6 +12,7 @@ class JsonCRUD:
         except FileNotFoundError:
             file = open(filename, 'w')
             file.write(json.dumps({'columns': [],'CRUD': []}))
+            dictionary = {'columns': [],'CRUD': []}
         self.columns = tuple(dictionary['columns'])
         file.close()
         self.filename = filename
@@ -94,6 +95,7 @@ class JsonCRUD:
         file = open(self.filename)
         dictionary = json.loads(file.read())
         file.close()
+        if type(value) not in (dict, list, tuple, str, float, int, bool, type(None)): value = None
         dictionary['CRUD'][index][column] = value
         file = open(self.filename, 'w')
         file.write(json.dumps(dictionary))
