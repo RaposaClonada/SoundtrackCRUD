@@ -95,6 +95,7 @@ class JsonCRUD:
         file = open(self.filename)
         dictionary = json.loads(file.read())
         file.close()
+        if column not in dictionary['columns']: raise KeyError
         if type(value) not in (dict, list, tuple, str, float, int, bool, type(None)): value = None
         dictionary['CRUD'][index][column] = value
         file = open(self.filename, 'w')
